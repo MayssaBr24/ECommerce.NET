@@ -1,0 +1,49 @@
+﻿@model atelier2.Models.Category
+
+@{
+    ViewData["Title"] = "Supprimer la Catégorie";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>@ViewData["Title"]
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-exclamation-circle me-2"></i>Êtes-vous sûr de vouloir supprimer cette catégorie ?
+                    </h5>
+                    <p class="mb-0">Cette action est irréversible.</p>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="text-blue mb-3">Détails de la catégorie :</h5>
+                    <div class="detail-item">
+                        <span class="detail-label fw-bold text-blue">ID :</span>
+                        <span class="detail-value">@Model.CategoryId</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label fw-bold text-blue">Nom :</span>
+                        <span class="detail-value">@Model.CategoryName</span>
+                    </div>
+                </div>
+
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="CategoryId" />
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Confirmer la suppression
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

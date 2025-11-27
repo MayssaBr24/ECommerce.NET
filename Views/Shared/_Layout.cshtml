@@ -1,0 +1,362 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Mayssa Shop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/atelier2.styles.css" asp-append-version="true" />
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --dark-color: #2d3748;
+            --light-color: #f8f9fa;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+            .nav-link:hover {
+                color: white !important;
+                transform: translateY(-1px);
+            }
+
+        .btn-outline-primary {
+            border-color: white;
+            color: white;
+        }
+
+            .btn-outline-primary:hover {
+                background-color: white;
+                color: var(--primary-color);
+            }
+
+        #sidebar {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .list-group-item {
+            border: none;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+            .list-group-item:hover {
+                border-left-color: var(--primary-color);
+                background-color: #f8f9fa;
+            }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            }
+
+        .product-image {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .badge-category {
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            color: white;
+        }
+
+        .footer {
+            background: var(--dark-color);
+            color: white;
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .dropdown-item {
+            transition: background-color 0.3s ease;
+        }
+
+            .dropdown-item:hover {
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+            }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--warning-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Style pour la sidebar des catégories */
+        .categories-sidebar {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-shopping-bag me-2"></i>ECommerce Shop
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <!-- MENU GAUCHE -->
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i>Accueil
+                            </a>
+                        </li>
+
+                        <!-- Bouton Catégories visible seulement pour Admin/Manager -->
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Category" asp-action="Index">
+                                    <i class="fas fa-tags me-1"></i>Catégories
+                                </a>
+                            </li>
+                        }
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Product" asp-action="Index">
+                                <i class="fas fa-box me-1"></i>Produits
+                            </a>
+                        </li>
+
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button">
+                                    <i class="fas fa-cog me-1"></i>Administration
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Create">
+                                        <i class="fas fa-plus me-2"></i>Créer Produit
+                                    </a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="CreateRole">
+                                        <i class="fas fa-user-plus me-2"></i>Créer Rôle
+                                    </a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ListRoles">
+                                        <i class="fas fa-list me-2"></i>Liste Rôles
+                                    </a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+
+                    <!-- BOUTONS À DROITE -->
+                    <div class="d-flex align-items-center">
+                        <!-- Search Bar -->
+                        <form class="d-flex me-3 search-box" asp-controller="Product" asp-action="Search">
+                            <div class="input-group">
+                                <input class="form-control" type="search" placeholder="Rechercher un produit..." name="val">
+                                <button class="btn btn-light" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Panier -->
+                        <a class="btn btn-outline-light position-relative me-3" asp-controller="Panier" asp-action="Index">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge" id="cartCount">0</span>
+                        </a>
+
+                        <!-- Login/Logout -->
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="dropdown">
+                                <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user me-1"></i>@User.Identity.Name
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <form method="post" asp-controller="Account" asp-action="Logout">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-light me-2" asp-controller="Account" asp-action="Login">
+                                <i class="fas fa-sign-in-alt me-1"></i>Connexion
+                            </a>
+                            <a class="btn btn-light" asp-controller="Account" asp-action="Register">
+                                <i class="fas fa-user-plus me-1"></i>Inscription
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid py-4">
+        <div class="row">
+            @{
+                // Déterminer si on est sur la page des produits
+                var isProductPage = ViewContext.RouteData.Values["controller"]?.ToString() == "Product" &&
+                ViewContext.RouteData.Values["action"]?.ToString() == "Index";
+            }
+
+            @if (isProductPage)
+            {
+                <!-- Menu latéral pour les catégories - UNIQUEMENT sur la page des produits -->
+                <div class="col-lg-2 categories-sidebar">
+                    <h5 class="mb-3 text-primary">
+                        <i class="fas fa-filter me-2"></i>Filtrer par catégorie
+                    </h5>
+                    <ul class="list-group">
+                        @await Html.PartialAsync("_CategoriesMenu", ViewData["Categories"])
+                    </ul>
+                </div>
+
+                <!-- Contenu principal réduit pour laisser place à la sidebar -->
+                <div class="col-lg-10">
+                    <main role="main">
+                        <!-- Messages d'alerte -->
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @RenderBody()
+                    </main>
+                </div>
+            }
+            else
+            {
+                <!-- Contenu principal plein écran pour les autres pages -->
+                <div class="col-12">
+                    <main role="main">
+                        <!-- Messages d'alerte -->
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @RenderBody()
+                    </main>
+                </div>
+            }
+        </div>
+    </div>
+
+    <footer class="footer mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0">
+                &copy; 2025 - Mayssa Shop -
+                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-light">Confidentialité</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // Mettre à jour le compteur du panier
+        function updateCartCount() {
+            $.get('/Panier/GetCartCount', function(data) {
+                $('#cartCount').text(data);
+            });
+        }
+
+        // Initialiser le compteur du panier
+        $(document).ready(function() {
+            updateCartCount();
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,87 @@
+﻿@model atelier2.Models.Order
+
+@{
+    ViewData["Title"] = "Confirmation de Commande";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header card-header-blue text-center">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-check-circle me-2"></i>Commande Validée !
+                </h2>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-4">
+                    <i class="fas fa-party-horn text-blue" style="font-size: 4rem;"></i>
+                </div>
+
+                <h3 class="text-blue-gradient mb-3">Merci pour votre achat, @Model.CustomerName !</h3>
+                <p class="lead mb-4">Votre commande a été enregistrée avec succès et sera traitée dans les plus brefs délais.</p>
+
+                <div class="order-details bg-light p-4 rounded-3 mb-4">
+                    <h4 class="text-blue mb-4">
+                        <i class="fas fa-receipt me-2"></i>Récapitulatif de votre commande
+                    </h4>
+
+                    <div class="row text-start">
+                        <div class="col-md-6 mb-3">
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold text-blue">Numéro de commande :</span>
+                                <span class="detail-value fs-5">#@Model.Id</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold text-blue">Date :</span>
+                                <span class="detail-value">@Model.OrderDate.ToString("dd/MM/yyyy à HH:mm")</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold text-blue">Montant total :</span>
+                                <span class="detail-value fs-5 text-blue">@Model.TotalAmount.ToString("C")</span>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold text-blue">Adresse de livraison :</span>
+                                <span class="detail-value">@Model.Address</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-center">
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-outline-primary me-md-2">
+                        <i class="fas fa-shopping-bag me-1"></i>Continuer mes achats
+                    </a>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-order">
+                        <i class="fas fa-home me-1"></i>Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .detail-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .detail-label {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .detail-value {
+        color: #495057;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+</style>

@@ -1,0 +1,45 @@
+﻿@model atelier2.Models.Category
+
+@{
+    ViewData["Title"] = "Créer une Catégorie";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header card-header-blue">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-plus me-2"></i>@ViewData["Title"]
+                </h3>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="CategoryName" class="form-label fw-bold text-blue">
+                            <i class="fas fa-tag me-2"></i>Nom de la catégorie
+                        </label>
+                        <input asp-for="CategoryName" class="form-control" placeholder="Entrez le nom de la catégorie" />
+                        <span asp-validation-for="CategoryName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-save me-1"></i>Créer
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Retour à la liste
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

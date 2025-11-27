@@ -1,0 +1,41 @@
+﻿@model IEnumerable<atelier2.Models.Category>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white border-0">
+        <h6 class="mb-0">
+            <i class="fas fa-filter me-2"></i>Catégories
+        </h6>
+    </div>
+    <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+            @if (Model == null || !Model.Any())
+            {
+                <li class="list-group-item text-muted small">
+                    <i class="fas fa-info-circle me-1"></i>Aucune catégorie disponible
+                </li>
+            }
+            else
+            {
+                <!-- Option "Tous les produits" -->
+                <li class="list-group-item">
+                    <a class="text-decoration-none text-dark fw-semibold d-flex align-items-center"
+                       asp-controller="Product" asp-action="Index">
+                        <i class="fas fa-th-large me-2 text-primary"></i>
+                        <span>Tous les produits</span>
+                    </a>
+                </li>
+
+                @foreach (var categorie in Model)
+                {
+                    <li class="list-group-item">
+                        <a class="text-decoration-none text-dark d-flex align-items-center"
+                           asp-controller="Product" asp-action="Index"
+                           asp-route-categoryId="@categorie.CategoryId">
+                            <i class="fas fa-tag me-2 text-muted"></i>
+                            <span>@categorie.CategoryName</span>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</div>
